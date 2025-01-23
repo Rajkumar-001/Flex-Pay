@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import  { useState } from "react";
+
+import { useNavigate } from "react-router-dom";
 
 export default function Send1() {
+
+    const navigate = useNavigate();
     const [isSending, setIsSending] = useState<boolean>(true);
 
     const handleSendClick = () => {
@@ -11,9 +15,11 @@ export default function Send1() {
         setIsSending(false);
     };
 
+
+    
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 p-5">
-            <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+        <div className="flex justify-center items-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 p-5">
+            <div className="bg-white rounded-lg shadow-lg p-8 ">
                 <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Payment Actions</h2>
                 <div className="flex justify-around mb-6">
                     <button
@@ -38,7 +44,7 @@ export default function Send1() {
                         <h3 className="text-xl font-semibold text-gray-800 mb-4">Send Payment</h3>
                         <p className="text-gray-600 mb-4">Transfer money to your recipient.</p>
                         <button
-                            onClick={() => alert("Navigating to Send Payment")}
+                            onClick={() => navigate("/transfer")}
                             className="px-6 py-2 bg-blue-600 text-white rounded-lg w-full hover:bg-blue-500"
                         >
                             Proceed to Send
@@ -49,7 +55,7 @@ export default function Send1() {
                         <h3 className="text-xl font-semibold text-gray-800 mb-4">Receive Payment</h3>
                         <p className="text-gray-600 mb-4">Receive funds from a sender.</p>
                         <button
-                            onClick={() => alert("Navigating to Receive Payment")}
+                            onClick={() =>navigate("/transfer")}
                             className="px-6 py-2 bg-green-600 text-white rounded-lg w-full hover:bg-green-500"
                         >
                             Proceed to Receive

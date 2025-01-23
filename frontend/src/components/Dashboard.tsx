@@ -5,39 +5,42 @@ import Send1 from "./SendComponent/Send1.tsx";
 
 export default function Dashboard() {
     return (
-        <div className="h-screen w-full flex bg-white-100 items-stretch">
-            {/* Sidebar: Sticky Sidebar */}
-            <div className="w-10 h-screen sticky top-0">
+        <div className="h-screen w-full flex bg-gray-100">
+            {/* Sidebar */}
+            <div className="w-64 h-screen bg-blue-800 text-white sticky top-0 shadow-lg">
                 <Sidebar />
             </div>
-
-
 
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col">
                 {/* Navbar */}
-                <HomeNavbar />
+                <div className="bg-white shadow-md sticky top-0 z-20">
+                    <HomeNavbar />
+                </div>
 
-                {/* Main Content Area with User Info and Send Components on the same line */}
-                <div className="flex-grow p-6 bg-gray-100">
-                    <div className="flex space-x-8">
-                        {/* User Info and Send on the same line */}
-                        <div className="w-1/2">
+                {/* Main Section */}
+                <div className="flex-grow p-6 bg-gradient-to-b from-gray-50 to-gray-200">
+                    <div className="flex flex-col space-y-6">
+                        {/* User Details */}
+                        <div className="bg-white shadow-md rounded-lg p-6">
                             <UserDetails />
                         </div>
 
-                        <div className="w-[30%] h-2/5">
-                            <Send1 />
+                        {/* Send Component Section */}
+                        <div className="flex justify-center">
+                            <div className="w-full md:w-2/3 bg-white shadow-lg rounded-lg p-6 border border-gray-300">
+                                <h3 className="text-xl font-bold text-gray-800 mb-4">
+                                    Send Money
+                                </h3>
+                                <Send1 />
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Footer with Transaction Details */}
-                <div className="bg-gray-200 p-6">
-                    <h3 className="text-xl font-semibold text-gray-800">Transaction Details</h3>
-                    <div className="mt-4">
-                        <p className="text-gray-600">No transactions yet.</p>
-                    </div>
+                {/* Footer */}
+                <div className="bg-blue-800 p-4 text-center text-white shadow-md">
+                    <p>© 2025 Your Application. All Rights Reserved.</p>
                 </div>
             </div>
         </div>

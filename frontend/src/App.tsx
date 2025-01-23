@@ -10,6 +10,11 @@ import SearchComponent from "./components/SearchComponent/SearchUser.tsx"
 
 
 
+import MainPage from "./components/SendComponent/MainPage.tsx";
+
+
+
+
 
 function App() {
  
@@ -23,8 +28,13 @@ function App() {
     <Route path="/Signup" element={<Signup />} />
     <Route path="/Dashboard" element={<Dashboard />}/>
     <Route path="/Search" element={<SearchComponent />} />
+    <Route path="/transfer" element={<MainPage />} />
     </Routes>
     </Router>
+
+ 
+
+
     
 
      

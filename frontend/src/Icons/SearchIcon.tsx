@@ -1,6 +1,12 @@
+import { useNavigate } from "react-router-dom";
+
+
 export function SearchIcon() {
+    const navigate=useNavigate();
     return (
-        <div className="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-700 rounded-md w-25 h-10 overflow-hidden">
+        <div  onClick={()=>{
+            navigate("/search")
+        }} className="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-700 rounded-md w-25 h-10 overflow-hidden">
             {/* SVG Icon */}
             <svg
                 xmlns="http://www.w3.org/2000/svg"
