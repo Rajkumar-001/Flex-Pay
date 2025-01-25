@@ -11,11 +11,11 @@ export default function UserDetails() {
     }, [dispatch]);
 
     return (
-        <div className="flex justify-center items-start min-h-screen bg-gray-100 py-4"> {/* Reduced py-8 to py-4 for less space */}
-            <div className="max-w-lg w-full bg-white shadow-lg rounded-lg p-6">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-2xl font-semibold text-gray-800">User Details</h2>
-                    <div className="text-sm text-gray-500">{new Date().toLocaleDateString()}</div>
+        <div className="flex justify-center items-start bg-gray-100 py-6 h-96">
+            <div className="max-w-lg w-full bg-white shadow-xl rounded-lg p-8 flex-1 h-full">
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-3xl font-semibold text-gray-800">User Details</h2>
+                    <p className="text-sm text-gray-600">{new Date().toLocaleDateString()}</p>
                 </div>
 
                 {isLoading && (
@@ -28,7 +28,7 @@ export default function UserDetails() {
 
                 {user && (
                     <div>
-                        <div className="space-y-3"> {/* Reduced space-y-4 to space-y-3 */}
+                        <div className="space-y-4">
                             <div className="flex justify-between items-center">
                                 <span className="text-sm text-gray-600">First Name:</span>
                                 <span className="font-semibold text-gray-800">{user.firstName}</span>
@@ -55,8 +55,8 @@ export default function UserDetails() {
                             </div>
                         </div>
 
-                        <div className="mt-4 flex justify-center"> {/* Adjusted margin-top for less space */}
-                            <button className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-500 focus:outline-none">
+                        <div className="mt-6 flex justify-center">
+                            <button className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-500">
                                 Update Information
                             </button>
                         </div>

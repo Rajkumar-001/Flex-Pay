@@ -1,29 +1,35 @@
 import React from "react";
 import { useAppSelector } from "../../store/hook.tsx";
 
-export default function HomeNavbar() {
-    // Fetch the user's first name from the Redux store
-    const firstName = useAppSelector((state) => state.user.user?.firstName);
-
-    return (
-        <div className="flex justify-between items-center bg-blue-200 p-4 border-b-2 border-blue-500 gap-5">
-            {/* Left Section: Welcome Message and Date */}
-            <div className="flex items-center gap-10">
-                <h1 className="text-lg font-bold">
-                    Welcome, {firstName ? firstName : "Guest"}!
-                </h1>
-                <p className="text-sm text-gray-700">{new Date().toDateString()}</p>
-            </div>
-
-            {/* Right Section: Dark Mode and Logout Buttons */}
-            <div className="flex items-center gap-5">
-                <button className="bg-red-800 text-white px-4 py-2 rounded-lg">
-                    Dark Mode
-                </button>
-                <button className="bg-blue-500 text-white px-4 py-2 rounded-lg">
-                    Logout
-                </button>
-            </div>
-        </div>
-    );
+interface HomeNavbarProps {
+  isExpanded: boolean;
 }
+
+const HomeNavbar: React.FC<HomeNavbarProps> = ({ isExpanded }) => {
+  const firstName = useAppSelector((state) => state.user.user?.firstName);
+
+  return (
+    <div
+      className={`flex justify-between items-center p-5 shadow-md bg-blue-800 ${
+        isExpanded ? "pl-72" : "pl-20"
+      } transition-all duration-300 ease-in-out`}
+    >
+      <div className="flex items-center gap-8">
+        <h1 className="text-xl font-semibold text-white">
+          Welcome, {firstName ? firstName : "Guest"}!
+        </h1>
+        <p className="text-sm text-gray-200">{new Date().toDateString()}</p>
+      </div>
+      <div className="flex items-center gap-6">
+        <button className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
+          Dark Mode
+        </button>
+        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-500">
+          Logout
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default HomeNavbar;
