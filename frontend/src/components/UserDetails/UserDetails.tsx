@@ -65,7 +65,7 @@ export default function UserDetails() {
             {/* Update Button */}
             <div className="mt-8 flex justify-center">
               <button className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-500 hover:shadow-md transition duration-300">
-                Update Information
+                Add Money
               </button>
             </div>
           </div>

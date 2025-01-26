@@ -3,13 +3,15 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+import { useTransaction } from "../../ContextApi/TransacationProvider.tsx";
+
 export default function MainPage() {
   const { user, isLoading, error } = useAppSelector((state) => state.user);
   const navigate = useNavigate();
 
+  const { setReceiver } = useTransaction(); // Access the setReceiver function from context
   const [sendUser, setSendUser] = useState("");
-  const [money, setMoney] = useState(0);
-  const [errorMessage, setErrorMessage] = useState(""); 
+  const [errorMessage, setErrorMessage] = useState("");
 
   return (
     <div className="h-screen w-full bg-gradient-to-b from-blue-600 to-blue-900 text-white p-5 flex flex-col justify-center items-center space-y-8">
@@ -55,35 +57,19 @@ export default function MainPage() {
               </div>
             </div>
 
-            {/* Balance Info */}
-            <div className="mb-6">
-              <div className="flex justify-between items-center">
-                <strong className="text-xl">Amount</strong>
-                <h3 className="text-gray-500">Account Balance: ₹{user.balance || 0}</h3>
-              </div>
-            </div>
-
             {/* Input Fields */}
             <div className="space-y-4">
               <div>
                 <input
                   onChange={(e) => setSendUser(e.target.value)}
+                  value={sendUser}
                   type="text"
                   placeholder="Enter Email/UID"
                   className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              <div>
-                <input
-                  onChange={(e) => setMoney(parseInt(e.target.value))}
-                  type="number"
-                  placeholder="Enter Amount"
-                  className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
             </div>
 
-    
             {errorMessage && <p className="text-red-500 text-center mt-4">{errorMessage}</p>}
 
             {/* Submit Button */}
@@ -92,26 +78,29 @@ export default function MainPage() {
                 onClick={() => {
                   const token = localStorage.getItem("authToken");
 
-                  // Check for missing or invalid inputs
-                  if (!money || money <= 0) {
-                    setErrorMessage("Please enter a valid amount to transfer.");
+                  // Validate input
+                  if (!sendUser) {
+                    setErrorMessage("Please enter a valid UID or email.");
                     return;
                   }
 
                   setErrorMessage("");
 
-                  // Axios GET request with query parameters
+                  // Verify the user via an API call
                   axios
                     .get("http://localhost:3001/api/user/checkUser", {
-                      params: { userEmail: sendUser }, // Use `params` to send query parameters
+                      params: { userEmail: sendUser },
                       headers: {
-                        Authorization: `Bearer ${token}`, // Pass JWT token in Authorization header
+                        Authorization: `Bearer ${token}`,
                       },
                     })
                     .then((res) => {
                       console.log(res.data);
-                      
-                    
+
+                      // Store the verified email/UPI ID in the context
+                      setReceiver(sendUser);
+
+                      // Navigate to the next page
                       navigate("/TransferMoney");
                     })
                     .catch((error) => {
@@ -126,7 +115,7 @@ export default function MainPage() {
                 }}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-md shadow-md font-bold"
               >
-                Transfer Money
+                Verify User
               </button>
             </div>
           </>

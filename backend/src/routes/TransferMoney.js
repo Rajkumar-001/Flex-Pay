@@ -1,39 +1,68 @@
 import express from "express";
 import prisma from "../db/index.js";
+
 const router = express.Router();
+
 router.post("/", async (req, res) => {
-  const { receiverEmail, amount } = req.body;
-  const senderId = req.userId; 
+  const { receiverEmail, amount, walletPin } = req.body; // Include walletPin from request
+  const senderId = req.userId; // Auth middleware will set `req.userId`
+
+  const amountFloat = parseFloat(amount);
+  console.log(amountFloat);
+
+  console.log("Checking user existence...");
 
   console.log("Received receiverEmail:", receiverEmail);
   console.log("Received amount:", amount);
+  console.log("Received walletPin:", walletPin);
   console.log("Sender ID:", senderId);
 
-  if (!receiverEmail || !amount) {
+  if (!receiverEmail || !amount || !walletPin) {
     return res.status(400).send({
       success: false,
-      message: "Receiver email and amount are required",
+      message: "Receiver email, amount, and wallet PIN are required",
     });
   }
 
   try {
-    
+    // Verify wallet PIN
+    const sender = await prisma.user.findUnique({
+      where: { id: senderId },
+    });
+
+    if (!sender) {
+      return res.status(404).send({
+        success: false,
+        message: "Sender not found",
+      });
+    }
+
+    if (sender.WalletPin !== walletPin.toString()) {
+      return res.status(403).send({
+        success: false,
+        message: "Invalid wallet PIN",
+      });
+    }
+
     const result = await prisma.$transaction(async (prisma) => {
-     
+      // Fetch sender balance (it is stored as string)
       const senderBalance = await prisma.balance.findFirst({
         where: { userId: senderId },
-        lock: { mode: "forUpdate" },
       });
 
       if (!senderBalance) {
         throw new Error("Sender balance not found");
       }
 
-      if (senderBalance.balance < amount) {
+      // Convert sender balance from string to number for comparison
+      const senderBalanceAmount = parseFloat(senderBalance.balance);
+
+      if (senderBalanceAmount < amountFloat) {
         throw new Error("Insufficient balance");
       }
 
-      const receiver = await prisma.user.findUnique({
+      // Fetch receiver details
+      const receiver = await prisma.user.findFirst({
         where: {
           OR: [{ email: receiverEmail }, { UpiId: receiverEmail }],
         },
@@ -43,48 +72,60 @@ router.post("/", async (req, res) => {
         throw new Error("Receiver not found");
       }
 
+      // Fetch receiver's balance (it is stored as string)
       const receiverBalance = await prisma.balance.findFirst({
         where: { userId: receiver.id },
-        lock: { mode: "forUpdate" }, // Lock the receiver's balance row
       });
 
       if (!receiverBalance) {
         throw new Error("Receiver balance not found");
       }
 
-      // Perform the balance update in the transaction
-      await prisma.balance.update({
-        where: { userId: senderId },
-        data: { balance: senderBalance.balance - amount },
-      });
+      // Convert receiver balance from string to number for calculation
+      const receiverBalanceAmount = parseFloat(receiverBalance.balance);
+
+      // Update sender's balance: subtract amount
+      const newSenderBalance = (senderBalanceAmount - amountFloat).toString(); // Convert back to string
 
       await prisma.balance.update({
-        where: { userId: receiver.id },
-        data: { balance: receiverBalance.balance + amount },
+        where: { id: senderBalance.id }, // Use `id` for unique identification
+        data: { balance: newSenderBalance },
       });
 
-      // Log the transaction for both sender and receiver
+      // Only update the receiver's balance if sender and receiver are not the same
+      if (senderId !== receiver.id) {
+        const newReceiverBalance = (receiverBalanceAmount + amountFloat).toString(); // Convert back to string
+
+        await prisma.balance.update({
+          where: { id: receiverBalance.id }, // Use `id` for unique identification
+          data: { balance: newReceiverBalance },
+        });
+      }
+
+      // Log the transaction
       const transaction = await prisma.transaction.create({
         data: {
           senderId,
           receiverId: receiver.id,
-          amount: amount,
+          amount: amountFloat,
         },
       });
 
-      // Optional: Log a reverse transaction for the receiver (so that they have a record as well)
-      await prisma.transaction.create({
-        data: {
-          senderId: receiver.id,
-          receiverId: senderId,
-          amount: amount,
-        },
-      });
+      // Optional: Reverse transaction log for the receiver as well
+      if (senderId !== receiver.id) {
+        await prisma.transaction.create({
+          data: {
+            senderId: receiver.id,
+            receiverId: senderId,
+            amount: amountFloat,
+          },
+        });
+      }
 
-      // Return success
       return {
         success: true,
         message: "Money transferred successfully",
+        transactionId: transaction.id, // Optional: Return transaction ID
       };
     });
 

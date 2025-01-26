@@ -6,7 +6,7 @@ export default function Nav() {
 
     return (
         <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 h-16 w-full flex justify-between items-center px-10 shadow-lg">
-            <div className="text-white font-bold text-2xl">Banking App</div>
+            <div className="text-white font-bold text-2xl">Flex-Pay</div>
 
             <div className="flex gap-6">
                 {/* Sign In Button */}

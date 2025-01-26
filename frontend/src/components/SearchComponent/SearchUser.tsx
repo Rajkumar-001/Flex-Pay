@@ -1,35 +1,50 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useTransaction } from "../../ContextApi/TransacationProvider.tsx";
+import { useNavigate } from "react-router-dom";
 
 export default function SearchUser() {
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { setReceiver } = useTransaction();
+  const navigate = useNavigate();
+
+  const fetchUsers = async () => {
+    if (!search.trim()) {
+      setUsers([]);
+      return;
+    }
+    try {
+      setIsLoading(true);
+      const token = localStorage.getItem("authToken");
+      const response = await axios.get(
+        `http://localhost:3001/api/user/search/${search.trim()}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setUsers(response.data);
+      setErrorMessage("");
+    } catch (error) {
+      console.error("Error fetching users:", error.response?.data || error.message);
+      setErrorMessage("Unable to fetch users. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const token = localStorage.getItem("authToken");
-        const response = await axios.get(
-          `http://localhost:3001/api/user/search/${search.trim() || ""}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setUsers(response.data);
-      } catch (error) {
-        console.error("Error fetching users:", error.response?.data || error.message);
-      }
-    };
+    const debounce = setTimeout(() => {
+      fetchUsers();
+    }, 300);
 
-    fetchUsers();
+    return () => clearTimeout(debounce);
   }, [search]);
-
-  const handleSend = (userId) => {
-    console.log(`Send action triggered for user with ID: ${userId}`);
-  };
 
   return (
     <div className="h-screen flex justify-center items-center bg-gradient-to-r from-blue-500 to-indigo-600 p-6">
@@ -63,6 +78,8 @@ export default function SearchUser() {
             />
           </svg>
         </div>
+        {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
+        {isLoading && <p className="text-center text-gray-500">Loading...</p>}
         <ul className="space-y-4">
           {users.map((user) => (
             <li
@@ -76,14 +93,17 @@ export default function SearchUser() {
                 <p className="text-gray-500 text-sm">{user.email}</p>
               </div>
               <button
-                onClick={() => handleSend(user.id)}
+                onClick={() => {
+                  setReceiver(user.email);
+                  navigate("/TransferMoney");
+                }}
                 className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
               >
                 Send
               </button>
             </li>
           ))}
-          {users.length === 0 && (
+          {users.length === 0 && !isLoading && (
             <li className="text-gray-500 text-center">No users found</li>
           )}
         </ul>
