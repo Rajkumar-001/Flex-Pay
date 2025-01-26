@@ -7,6 +7,7 @@ import Signup from "./components/Signup";
 import Dashboard from "./components/Dashboard";
 import SearchComponent from "./components/SearchComponent/SearchUser.tsx";
 import MainPage from "./components/SendComponent/MainPage.tsx";
+import TransferMoney from "./components/SendComponent/TransferMoney.tsx";
 
 
 
@@ -25,6 +26,7 @@ function App() {
     <Route path="/Dashboard" element={<Dashboard />} />
     <Route path="/Search" element={<SearchComponent />} />
     <Route path="/transfer" element={<MainPage />} />
+    <Route path="/TransferMoney" element={<TransferMoney />} />
     </Routes>
     </Router>
 

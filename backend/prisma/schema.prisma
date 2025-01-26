@@ -13,8 +13,8 @@ model User {
   lastName             String
   email                String        @unique
   password             String
-  WalletPin            String
-  UpiId                String
+  WalletPin            String        
+  UpiId                String        @unique
   createdAt            DateTime      @default(now())
   updatedAt            DateTime      @updatedAt
   balances             Balance[]

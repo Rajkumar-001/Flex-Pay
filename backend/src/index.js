@@ -9,6 +9,10 @@ import UserSearch from "./routes/UserSearch.js";
 import authMiddleWare from "./middlewares/authMiddleWare.js";
 import UserInfo from "./routes/UserInfo.js";
 
+import CheckUser from "./routes/CheckUser.js";
+
+import TransferMoney from "./routes/TransferMoney.js";
+
 
 
 const app = express();
@@ -22,6 +26,11 @@ app.use("/api/user/search", authMiddleWare, UserSearch);
 
 
 app.use("/api/user/getInfo",authMiddleWare,UserInfo);
+app.use("/api/user/checkUser", authMiddleWare, CheckUser);
+
+
+app.use("/api/user/transferMoney",authMiddleWare,TransferMoney);
+
 
 
 

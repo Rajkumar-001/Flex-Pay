@@ -9,7 +9,6 @@ dotenv.config();
 
 
 const userSigninSchema = z.object({
-
     email: z.string().email(),
     password: z.string().min(6),
 
@@ -65,7 +64,7 @@ router.post("/",async(req,res)=>{
             message:"User signed in successfully",
             token,
             user,
-            sucess:true,
+            success:true,
             balance,
 
         })

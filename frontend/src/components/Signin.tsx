@@ -33,7 +33,7 @@ export default function Signin() {
         password,
       })
       .then((res) => {
-        if (res.data.sucess) {
+        if (res.data.success) {
           const token = res.data.token;
           localStorage.setItem("authToken", token);
           setSuccessMessage("Login successful! Redirecting...");

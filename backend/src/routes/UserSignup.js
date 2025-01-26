@@ -1,12 +1,34 @@
 import express from "express";
 import prisma from "../db/index.js";
 
+import { z } from "zod";
+
 const router = express.Router();
+
+const userSignupSchema = z.object({
+
+  firstName: z.string().nonempty(),
+  lastName: z.string().nonempty(),
+  email: z.string().email(),
+  password: z.string().min(8),
+  confirmPassword: z.string().min(8),
+  WalletPin: z.string().length(4),
+});
+
 
 router.post("/", async (req, res) => {
   const { firstName, lastName, email, password, confirmPassword, WalletPin } = req.body;
 
   console.log(req.body);
+
+  try {
+
+    userSignupSchema.parse(req.body);
+
+  } catch (error) {
+    return res.status(400).json({ error: error.errors });
+
+  }
 
  
   if (password !== confirmPassword) {

@@ -1,74 +1,101 @@
-import express from 'express';
-import prisma from '../db/index.js';
-
+import express from "express";
+import prisma from "../db/index.js";
 const router = express.Router();
+router.post("/", async (req, res) => {
+  const { receiverEmail, amount } = req.body;
+  const senderId = req.userId; 
 
-router.post('/:from_id/:to_Id', async (req, res) => {
+  console.log("Received receiverEmail:", receiverEmail);
+  console.log("Received amount:", amount);
+  console.log("Sender ID:", senderId);
 
-    const { from_id, to_Id } = req.params;
-    const { amount } = req.body;
+  if (!receiverEmail || !amount) {
+    return res.status(400).send({
+      success: false,
+      message: "Receiver email and amount are required",
+    });
+  }
+
+  try {
     
-    try {
-        const sender = await prisma.user.findUnique({
+    const result = await prisma.$transaction(async (prisma) => {
+     
+      const senderBalance = await prisma.balance.findFirst({
+        where: { userId: senderId },
+        lock: { mode: "forUpdate" },
+      });
+
+      if (!senderBalance) {
+        throw new Error("Sender balance not found");
+      }
+
+      if (senderBalance.balance < amount) {
+        throw new Error("Insufficient balance");
+      }
+
+      const receiver = await prisma.user.findUnique({
         where: {
-            id: parseInt(from_id),
+          OR: [{ email: receiverEmail }, { UpiId: receiverEmail }],
         },
-        });
-    
-        const receiver = await prisma.user.findUnique({
-        where: {
-            id: parseInt(to_Id),
-        },
-        });
-    
-        if (!sender || !receiver) {
-        return res.status(404).json({
-            error: 'Sender or receiver not found',
-        });
-        }
-    
-        if (sender.balance < amount) {
-        return res.status(400).json({
-            error: 'Insufficient balance',
-        });
-        }
-    
-        const updatedSender = await prisma.user.update({
-        where: {
-            id: parseInt(from_id),
-        },
+      });
+
+      if (!receiver) {
+        throw new Error("Receiver not found");
+      }
+
+      const receiverBalance = await prisma.balance.findFirst({
+        where: { userId: receiver.id },
+        lock: { mode: "forUpdate" }, // Lock the receiver's balance row
+      });
+
+      if (!receiverBalance) {
+        throw new Error("Receiver balance not found");
+      }
+
+      // Perform the balance update in the transaction
+      await prisma.balance.update({
+        where: { userId: senderId },
+        data: { balance: senderBalance.balance - amount },
+      });
+
+      await prisma.balance.update({
+        where: { userId: receiver.id },
+        data: { balance: receiverBalance.balance + amount },
+      });
+
+      // Log the transaction for both sender and receiver
+      const transaction = await prisma.transaction.create({
         data: {
-            balance: sender.balance - amount,
+          senderId,
+          receiverId: receiver.id,
+          amount: amount,
         },
-        });
-    
-        const updatedReceiver = await prisma.user.update({
-        where: {
-            id: parseInt(to_Id),
-        },
+      });
+
+      // Optional: Log a reverse transaction for the receiver (so that they have a record as well)
+      await prisma.transaction.create({
         data: {
-            balance: receiver.balance + amount,
+          senderId: receiver.id,
+          receiverId: senderId,
+          amount: amount,
         },
-        });
-    
-        res.json({
-        message: 'Transfer successful',
-        sender: updatedSender,
-        receiver: updatedReceiver,
-        });
-    
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({
-        error: 'An error occurred while transferring money',
-        message: error.message,
-        });
-    }
+      });
 
+      // Return success
+      return {
+        success: true,
+        message: "Money transferred successfully",
+      };
+    });
 
-
-
-
+    return res.send(result);
+  } catch (error) {
+    console.error("Error transferring money:", error);
+    return res.status(500).send({
+      success: false,
+      message: "Internal server error",
+    });
+  }
 });
 
 export default router;

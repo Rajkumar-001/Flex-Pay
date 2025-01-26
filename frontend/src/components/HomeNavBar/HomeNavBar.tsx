@@ -1,5 +1,6 @@
 import React from "react";
 import { useAppSelector } from "../../store/hook.tsx";
+import { useNavigate } from "react-router-dom";
 
 interface HomeNavbarProps {
   isExpanded: boolean;
@@ -7,6 +8,8 @@ interface HomeNavbarProps {
 
 const HomeNavbar: React.FC<HomeNavbarProps> = ({ isExpanded }) => {
   const firstName = useAppSelector((state) => state.user.user?.firstName);
+
+  const navigate = useNavigate();
 
   return (
     <div
@@ -24,7 +27,16 @@ const HomeNavbar: React.FC<HomeNavbarProps> = ({ isExpanded }) => {
         <button className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
           Dark Mode
         </button>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-500">
+        <button
+          onClick={() => {
+            // Remove authToken from localStorage on logout
+            localStorage.removeItem("authToken");
+
+            // Redirect to the login page
+            navigate("/Signin");
+          }}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-500"
+        >
           Logout
         </button>
       </div>
