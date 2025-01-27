@@ -21,7 +21,7 @@ export default function TransferMoney() {
     }
 
     // Validate wallet PIN (must be a string of 4 digits)
-    if (!walletPin || walletPin.length !== 4 || isNaN(walletPin)) {
+    if (!walletPin || walletPin.length !== 4 || isNaN(parseInt(walletPin))) {
       setErrorMessage("Wallet PIN must be a 4-digit number.");
       setSuccessMessage("");
       return;
@@ -39,7 +39,7 @@ export default function TransferMoney() {
     try {
       const token = localStorage.getItem("authToken"); 
 
-      const response = await axios.post(
+       await axios.post(  
         "http://localhost:3001/api/user/transferMoney", 
         
         {
@@ -62,11 +62,11 @@ export default function TransferMoney() {
       setTimeout(() => {
         navigate("/dashboard"); // Redirect to dashboard after success
       }, 2000);
-    } catch (error) {
+    } catch (error:unknown) {
       // Handle error response
-      console.error("Error during transfer:", error.response?.data || error.message);
+      console.error(error);
       setErrorMessage(
-        error.response?.data?.message || "Failed to transfer money. Please try again."
+      "Failed to transfer money. Please try again."
       );
       setSuccessMessage("");
     }

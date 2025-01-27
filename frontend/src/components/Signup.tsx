@@ -52,6 +52,7 @@ export default function Signup() {
         WalletPin,
       })
       .then((res) => {
+        console.log(res.data);
         setSuccessMessage("Signup successful! Redirecting to login...");
         setErrorMessage(null); // Clear any previous error messages
         setTimeout(() => {

@@ -3,11 +3,19 @@ import axios from "axios";
 import { useTransaction } from "../../ContextApi/TransacationProvider.tsx";
 import { useNavigate } from "react-router-dom";
 
+// Define the User type
+type User = {
+  id: string; // or number, depending on your API
+  firstName: string;
+  lastName: string;
+  email: string;
+};
+
 export default function SearchUser() {
-  const [search, setSearch] = useState("");
-  const [users, setUsers] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [search, setSearch] = useState<string>("");
+  const [users, setUsers] = useState<User[]>([]); // Use User[] as the type for the users state
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { setReceiver } = useTransaction();
   const navigate = useNavigate();
 
@@ -19,7 +27,7 @@ export default function SearchUser() {
     try {
       setIsLoading(true);
       const token = localStorage.getItem("authToken");
-      const response = await axios.get(
+      const response = await axios.get<User[]>( // Specify the expected response type
         `http://localhost:3001/api/user/search/${search.trim()}`,
         {
           headers: {
@@ -30,8 +38,9 @@ export default function SearchUser() {
       );
       setUsers(response.data);
       setErrorMessage("");
-    } catch (error) {
-      console.error("Error fetching users:", error.response?.data || error.message);
+    } catch (e) {
+      
+      console.error(e);
       setErrorMessage("Unable to fetch users. Please try again later.");
     } finally {
       setIsLoading(false);
