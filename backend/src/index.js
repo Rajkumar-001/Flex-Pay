@@ -38,5 +38,5 @@ app.use("/api/user/transferMoney",authMiddleWare,TransferMoney);
 
 
 app.listen(3001, () => {
-  console.log("Server is running on port 3001");
+  ("Server is running on port 3001");
 });

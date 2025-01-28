@@ -10,7 +10,7 @@ export default function TransferMoney() {
   const [successMessage, setSuccessMessage] = useState("");
   const { receiver } = useTransaction(); 
   const navigate = useNavigate(); 
-  console.log(receiver);
+
 
   const handleSubmit = async () => {
     // Validate amount (as string)
@@ -28,7 +28,7 @@ export default function TransferMoney() {
     }
 
 
-    console.log("Receiver Email/UPI ID:", receiver);
+
 
     // Ensure receiver exists
     if (!receiver || receiver.length === 0) {

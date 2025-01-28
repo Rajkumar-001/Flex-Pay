@@ -94,9 +94,8 @@ export default function MainPage() {
                         Authorization: `Bearer ${token}`,
                       },
                     })
-                    .then((res) => {
-                      console.log(res.data);
-
+                    .then(() => {
+                 
                       // Store the verified email/UPI ID in the context
                       setReceiver(sendUser);
 

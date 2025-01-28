@@ -7,9 +7,7 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   const { userEmail } = req.query;
 
-  console.log("Checking user existence...");
-  console.log("Received userEmail:", userEmail);
-
+ 
   if (!userEmail) {
     return res.status(400).send({
       success: false,

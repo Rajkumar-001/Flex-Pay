@@ -8,14 +8,9 @@ router.post("/", async (req, res) => {
   const senderId = req.userId; // Auth middleware will set `req.userId`
 
   const amountFloat = parseFloat(amount);
-  console.log(amountFloat);
+ 
 
-  console.log("Checking user existence...");
-
-  console.log("Received receiverEmail:", receiverEmail);
-  console.log("Received amount:", amount);
-  console.log("Received walletPin:", walletPin);
-  console.log("Sender ID:", senderId);
+  
 
   if (!receiverEmail || !amount || !walletPin) {
     return res.status(400).send({

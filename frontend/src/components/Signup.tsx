@@ -51,8 +51,8 @@ export default function Signup() {
         confirmPassword,
         WalletPin,
       })
-      .then((res) => {
-        console.log(res.data);
+      .then(() => {
+     
         setSuccessMessage("Signup successful! Redirecting to login...");
         setErrorMessage(null); // Clear any previous error messages
         setTimeout(() => {

@@ -19,7 +19,7 @@ const userSignupSchema = z.object({
 router.post("/", async (req, res) => {
   const { firstName, lastName, email, password, confirmPassword, WalletPin } = req.body;
 
-  console.log(req.body);
+ 
 
   try {
 

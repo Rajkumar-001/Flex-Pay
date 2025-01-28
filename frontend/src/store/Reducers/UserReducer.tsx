@@ -26,7 +26,7 @@ export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
            
         });
         
-        console.log("Helo Data: ",response);
+    
 
         return response.data;
        
