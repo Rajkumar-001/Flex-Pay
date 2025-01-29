@@ -19,7 +19,7 @@ export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
     const token = localStorage.getItem("authToken");
 
     if (token) {
-        const response = await axios.get("http://localhost:3001/api/user/getInfo", {
+        const response = await axios.get("https://api.flexpay.raj100xdev.me/api/user/getInfo", {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

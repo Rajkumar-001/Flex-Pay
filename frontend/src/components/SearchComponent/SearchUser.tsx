@@ -28,7 +28,7 @@ export default function SearchUser() {
       setIsLoading(true);
       const token = localStorage.getItem("authToken");
       const response = await axios.get<User[]>( // Specify the expected response type
-        `http://localhost:3001/api/user/search/${search.trim()}`,
+        `https://api.flexpay.raj100xdev.me/api/user/search/${search.trim()}`,
         {
           headers: {
             "Content-Type": "application/json",

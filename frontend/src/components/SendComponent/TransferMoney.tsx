@@ -40,7 +40,7 @@ export default function TransferMoney() {
       const token = localStorage.getItem("authToken"); 
 
        await axios.post(  
-        "http://localhost:3001/api/user/transferMoney", 
+        "https://api.flexpay.raj100xdev.me/api/user/transferMoney", 
         
         {
             

@@ -88,7 +88,7 @@ export default function MainPage() {
 
                   // Verify the user via an API call
                   axios
-                    .get("http://localhost:3001/api/user/checkUser", {
+                    .get("https://api.flexpay.raj100xdev.me/api/user/checkUser", {
                       params: { userEmail: sendUser },
                       headers: {
                         Authorization: `Bearer ${token}`,

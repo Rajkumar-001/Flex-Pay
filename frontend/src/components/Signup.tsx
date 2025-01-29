@@ -1,6 +1,6 @@
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ export default function Signup() {
 
     // Make the API call to register the user
     axios
-      .post("http://localhost:3001/api/user/signup", {
+      .post("https://api.flexpay.raj100xdev.me/api/user/signup", {
         firstName,
         lastName,
         email,
@@ -52,7 +52,6 @@ export default function Signup() {
         WalletPin,
       })
       .then(() => {
-     
         setSuccessMessage("Signup successful! Redirecting to login...");
         setErrorMessage(null); // Clear any previous error messages
         setTimeout(() => {
@@ -60,8 +59,8 @@ export default function Signup() {
         }, 2000); // Redirect after 2 seconds
       })
       .catch((err) => {
-        // Handle any error from the backend
-        setErrorMessage(err.response?.data?.error || "An error occurred. Please try again.");
+        // Display specific error from the backend
+        setErrorMessage(err.response?.data?.error || "An unexpected error occurred. Please try again.");
       });
   };
 
@@ -78,9 +77,7 @@ export default function Signup() {
 
         {/* Right Section */}
         <div className="flex-1 p-10">
-          <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">
-            Create Your Account
-          </h2>
+          <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">Create Your Account</h2>
 
           {/* Success Message */}
           {successMessage && (
