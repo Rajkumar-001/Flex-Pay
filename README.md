@@ -58,7 +58,7 @@ FlexPay is a digital payment application designed to facilitate seamless transac
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/flexpay.git
+   git clone https://github.com/Rajkumar-001/flexpay.git
    cd flexpay
    ```
 
@@ -69,7 +69,7 @@ FlexPay is a digital payment application designed to facilitate seamless transac
 
 3. Set up environment variables in a `.env` file:
    ```env
-   MONGO_URI=your_mongo_database_url
+
    JWT_SECRET=your_jwt_secret
    POSTGRES_URL=your_postgres_database_url
    ```
@@ -111,6 +111,6 @@ This project is licensed under the **MIT License**.
 
 ## 📬 Contact
 For any queries or collaborations, reach out at:
-📧 **Email**: sudhanshu@example.com  
+📧 **Email**: rpandeya12345@gmail.com
 🌐 **Portfolio**: [Your Portfolio Link]  
 
